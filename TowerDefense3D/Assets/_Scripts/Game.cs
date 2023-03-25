@@ -13,8 +13,46 @@ public class Game : MonoBehaviour
     [SerializeField]
     private GameBoard _board;
 
+    [SerializeField]
+    GameTileContentFactory _contentFactory;
+
+    [SerializeField]
+    Camera _camera;
+
+    private Ray TouchRay => _camera.ScreenPointToRay(Input.mousePosition);
+
     private void Start()
     {
-        _board.Initialize(_boardSize);
+        _board.Initialize(_boardSize, _contentFactory);
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            HandleTouche();
+        }
+        else if (Input.GetMouseButtonDown(1))
+        {
+            HandleAlternativeTouche();
+        }
+    }
+
+    private void HandleTouche()
+    {
+        GameTile tile = _board.GetTile(TouchRay);
+        if (tile != null)
+        {
+            _board.ToggleWall(tile);
+        }
+    }
+
+    private void HandleAlternativeTouche()
+    {
+        GameTile tile = _board.GetTile(TouchRay);
+        if (tile != null)
+        {
+            _board.ToggleDestination(tile);
+        }
     }
 }
