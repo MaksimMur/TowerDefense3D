@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daf272cb2d0b2864e87fcd7b3630bc0d, type: 3}
   m_Name: ContentFactory
   m_EditorClassIdentifier: 
-  _destinationPrefab: {fileID: 0}
-  _emptyPrefab: {fileID: 0}
+  _destinationPrefab: {fileID: -7108617282488604451, guid: fe43bf5be0d48c64988667182a6689d2, type: 3}
+  _emptyPrefab: {fileID: 250778170835164302, guid: 3efefd0bb747d7d4e90ec462e143f90b, type: 3}
+  _wallPrefab: {fileID: 5863076616308211809, guid: 28be41d2d3abd5349b29d4ca514e32b4, type: 3}
+  _spawnPrefab: {fileID: 5119835321241958813, guid: ec351caba90ccdc4f9b99a718b9088c9, type: 3}

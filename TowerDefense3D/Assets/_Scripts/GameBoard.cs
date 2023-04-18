@@ -14,24 +14,28 @@ public class GameBoard : MonoBehaviour
     private Vector2Int _size;
 
     private GameTile[] _tiles;
-    
+
     private Queue<GameTile> _searchFrontier = new Queue<GameTile>();
 
     private GameTileContentFactory _contentFactory;
 
+    private List<GameTile> _spawnPoints = new List<GameTile>();
+
+    public int SpawnPointsCount => _spawnPoints.Count;
+
     public void Initialize(Vector2Int size, GameTileContentFactory contentFactory)
     {
         _size = size;
-        _contentFactory = contentFactory;   
+        _contentFactory = contentFactory;
         _ground.localScale = new Vector3(size.x, size.y, 1f);
 
-        Vector2 offset = new Vector2((size.x - 1) *0.5f, (size.y - 1) * 0.5f);
+        Vector2 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
 
         _tiles = new GameTile[_size.x * _size.y];
 
-        for (int i =0, y = 0; y < size.y; y++)
+        for (int i = 0, y = 0; y < size.y; y++)
         {
-            for (int x = 0;x < size.x; x++,i++)
+            for (int x = 0; x < size.x; x++, i++)
             {
                 GameTile tile = _tiles[i] = Instantiate(_tilePrefab);
                 tile.transform.SetParent(transform, false);
@@ -55,8 +59,8 @@ public class GameBoard : MonoBehaviour
                 tile.Content = contentFactory.Get(GameTileContentType.Empty);
             }
         }
-        ToggleDestination(_tiles[_tiles.Length/2]);
-        FindPaths();
+        ToggleDestination(_tiles[_tiles.Length / 2]);
+        ToggleSpawnPoint(_tiles[0]);
     }
 
     private bool FindPaths()
@@ -90,20 +94,20 @@ public class GameBoard : MonoBehaviour
                     _searchFrontier.Enqueue(tile.GrowPathEast());
                     _searchFrontier.Enqueue(tile.GrowPathWest());
                 }
-                else 
+                else
                 {
                     _searchFrontier.Enqueue(tile.GrowPathWest());
                     _searchFrontier.Enqueue(tile.GrowPathEast());
                     _searchFrontier.Enqueue(tile.GrowPathSouth());
                     _searchFrontier.Enqueue(tile.GrowPathNorth());
                 }
-               
+
             }
         }
 
-        foreach(var t in _tiles)
+        foreach (var t in _tiles)
         {
-            if(!t.HasPath)
+            if (!t.HasPath)
             {
                 return false;
             }
@@ -116,18 +120,35 @@ public class GameBoard : MonoBehaviour
         return true;
     }
 
+    public void ToggleSpawnPoint(GameTile tile)
+    {
+        if (tile.Content.Type == GameTileContentType.SpawnPoint)
+        {
+            if (_spawnPoints.Count > 1)
+            {
+                _spawnPoints.Remove(tile);
+                tile.Content = _contentFactory.Get(GameTileContentType.Empty);
+            }
+        }
+        else if (tile.Content.Type == GameTileContentType.Empty)
+        {
+            tile.Content = _contentFactory.Get(GameTileContentType.SpawnPoint);
+            _spawnPoints.Add(tile);
+        }
+    }
+
     public void ToggleDestination(GameTile tile)
     {
         if (tile.Content.Type == GameTileContentType.Destination)
         {
             tile.Content = _contentFactory.Get(GameTileContentType.Empty);
-            if(!FindPaths())
+            if (!FindPaths())
             {
                 tile.Content = _contentFactory.Get(GameTileContentType.Destination);
                 FindPaths();
             }
         }
-        else if(tile.Content.Type == GameTileContentType.Empty)
+        else if (tile.Content.Type == GameTileContentType.Empty)
         {
             tile.Content = _contentFactory.Get(GameTileContentType.Destination);
             FindPaths();
@@ -139,9 +160,9 @@ public class GameBoard : MonoBehaviour
         if (tile.Content.Type == GameTileContentType.Wall)
         {
             tile.Content = _contentFactory.Get(GameTileContentType.Empty);
-                FindPaths();
-        }        
-        else if(tile.Content.Type== GameTileContentType.Empty)
+            FindPaths();
+        }
+        else if (tile.Content.Type == GameTileContentType.Empty)
         {
             tile.Content = _contentFactory.Get(GameTileContentType.Wall);
             if (!FindPaths())
@@ -166,5 +187,10 @@ public class GameBoard : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public GameTile GetSpawnPoint(int index)
+    {
+        return _spawnPoints[index];
     }
 }

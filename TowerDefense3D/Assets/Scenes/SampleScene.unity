@@ -151,7 +151,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -248,6 +248,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boardSize: {x: 11, y: 11}
   _board: {fileID: 1103209742}
+  _contentFactory: {fileID: 11400000, guid: ac5c36fb3d4fc7c4995141235c54024c, type: 2}
+  _enemyFactory: {fileID: 11400000, guid: edb4f17e9eec7fa43a3ed0c254de541d, type: 2}
+  _spawnSpeed: 2.1
+  _camera: {fileID: 963194227}
 --- !u!4 &888443290
 Transform:
   m_ObjectHideFlags: 0
